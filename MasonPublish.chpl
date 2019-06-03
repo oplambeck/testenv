@@ -22,7 +22,7 @@ proc forkMasonReg(){
   var tail = usernameurl.find("/")-1: int;
   var head = usernameurl.find(":")+1: int;
   var username = usernameurl(head..tail);
-  var ret = runCommand("git clone https://github.com/chapel-lang/mason-registry mason-registry", quiet=false);
+  var ret = runCommand("git clone https://github.com/oplambeck/mason-registry mason-registry", quiet=false);
   return ret;
   
 }
@@ -39,13 +39,13 @@ proc branchMasonReg()
   var localEnv = runCommand("pwd"):string;
   var Env = localEnv(1..localEnv.length-1);
   const masonreg = Env + "/mason-registry/";
-  const branchCommand = "git checkout -b branchToEdit": string;
+  const branchCommand = "git checkout -b newPackageRequest": string;
   var ret = gitC(masonreg, branchCommand);
   return ret;
 }
 branchMasonReg();
 
-proc addPackageToBricks(){
+proc addPackageToBricks() : string{
   var url = geturl();
 
   const cwd = getEnv("PWD");
@@ -63,18 +63,29 @@ proc addPackageToBricks(){
   var tomlWriter = newToml.writer();
   tomlWriter.write(baseToml);
   const addSource = '\n[source]\n' +
-                       'git url = "' + url + '"\n';
+    'giturl = "' + url(1..url.length-1) + '"\n';
   tomlWriter.write(addSource);
   tomlWriter.close();
+  return packageName;
  }
 
 
-addPackageToBricks();
+var package = addPackageToBricks();
 
-
-/*
-proc pullRequest();
+proc pullRequest(package)
 {
-
+  const cwd = getEnv("PWD");
+  const projectHome = getProjectHome(cwd);
+  here.chdir(cwd + "/mason-registry/Bricks/");
+  runCommand("git add " + package);
+  runCommand('git commit -m' + package);
+  here.chdir(cwd +"/mason-registry/");
+  runCommand('git push --set-upstream origin newPackageRequest');
+  runCommand('git push');
+  runCommand('git request-pull master https://github.com/oplambeck/mason-registry');
+  
+ 
 }
-*/
+
+
+pullRequest(package);
