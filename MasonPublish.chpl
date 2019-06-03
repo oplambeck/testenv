@@ -61,12 +61,8 @@ proc addPackageToBricks() : string{
   const baseToml = tomlFile;
   var newToml = open(versionNum + ".toml", iomode.cw);
   var tomlWriter = newToml.writer();
+  baseToml["brick"]["source"] = url(1..url.length-1);
   tomlWriter.write(baseToml);
-  /* masonAdd(baseToml, "source", url(1..url.length-1));
-     toml["Brick"]["source"] = url(1..url.length-1);*/
-  const addSource = '\n[source]\n' +
-  'giturl = "' + url(1..url.length-1) + '"\n';
-  tomlWriter.write(addSource);
   tomlWriter.close();
   return packageName;
  }
@@ -85,9 +81,5 @@ proc pullRequest(package)
   runCommand('git push --set-upstream origin newPackageRequest');
   runCommand('git push');
   runCommand('git request-pull master https://github.com/oplambeck/mason-registry');
-  
- 
 }
-
-
 pullRequest(package);
