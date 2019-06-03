@@ -62,6 +62,7 @@ proc addPackageToBricks() : string{
   var newToml = open(versionNum + ".toml", iomode.cw);
   var tomlWriter = newToml.writer();
   tomlWriter.write(baseToml);
+  /*  toml["Brick"]["source"] = url(1..url.length-1);*/
   const addSource = '\n[source]\n' +
     'giturl = "' + url(1..url.length-1) + '"\n';
   tomlWriter.write(addSource);
