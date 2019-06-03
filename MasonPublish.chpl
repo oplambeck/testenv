@@ -15,7 +15,7 @@ use FileSystem;
 use TOML;
 use MasonEnv;
 use MasonNew;
-
+use MasonModify;
 
 proc forkMasonReg(){
   var usernameurl = geturl();
@@ -62,9 +62,10 @@ proc addPackageToBricks() : string{
   var newToml = open(versionNum + ".toml", iomode.cw);
   var tomlWriter = newToml.writer();
   tomlWriter.write(baseToml);
-  /*  toml["Brick"]["source"] = url(1..url.length-1);*/
+  /* masonAdd(baseToml, "source", url(1..url.length-1));
+     toml["Brick"]["source"] = url(1..url.length-1);*/
   const addSource = '\n[source]\n' +
-    'giturl = "' + url(1..url.length-1) + '"\n';
+  'giturl = "' + url(1..url.length-1) + '"\n';
   tomlWriter.write(addSource);
   tomlWriter.close();
   return packageName;
